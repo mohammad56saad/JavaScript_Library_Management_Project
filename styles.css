@@ -17,6 +17,11 @@ header, button{
     background-color: #ce9461;
 }
 
+button{
+    color: white;
+    border: none;
+}
+
 header{
     padding: 12px;
 }
@@ -30,7 +35,7 @@ main{
     font-family: sans-serif;
 }
 
-main h2, table caption{
+main h2, table caption, h3{
     color: #6f7276;
 }
 
@@ -44,11 +49,22 @@ table thead{
 }
 
 table th{
-    padding: 5px 80px;
+    padding: 5px 70px;
 }
 
-table th:first-child{
+table th:first-child, th[class="header-button"]{
     padding: 5px 30px;
+}
+
+table td{
+    color: black;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.row-button{
+    padding: 3px 15px;
 }
 
 .buttons{
@@ -66,4 +82,35 @@ table th:first-child{
 
 button:hover{
     cursor: pointer;
+}
+
+#book-form{
+    width: 350px;
+    margin: 0px auto 30px;
+    display: none;
+}
+
+#book-form label{
+    color: black;
+}
+
+#book-form div{
+    margin-top: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#book-form div:last-child{
+    justify-content: end;
+}
+
+#book-form input, #book-form button{
+    width: 200px;
+    border: none;
+}
+
+#book-form button{
+    padding: 5px;
+    color: white;
 }

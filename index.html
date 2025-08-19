@@ -13,11 +13,33 @@
         <h1>Library Management</h1>
     </header>
     <main>
-        <h2>Home</h2>
+        <h2 id="title">Home</h2>
+        <form action="#" method="get" id="book-form">
+            <h3>Add Book</h3>
+            <div>
+                <label for="name">Name</label>
+                <input type="text" id="name" placeholder="Name" required>
+            </div>
+            <div>
+                <label for="author">Author</label>
+                <input type="text" id="author" placeholder="Author" required>
+            </div>
+            <div>
+                <label for="publisher">Publisher</label>
+                <input type="text" id="publisher" placeholder="Publisher" required>
+            </div>
+            <div>
+                <label for="date">Publishing Date</label>
+                <input type="date" id="date" required>
+            </div>
+            <div>
+                <button type="submit" id="form-btn">Add Book</button>
+            </div>
+        </form>
         <table>
             <caption>Books available in Library</caption>
             <thead>
-                <tr>
+                <tr id="header-row">
                     <th>Sr</th>
                     <th>Book</th>
                     <th>Author</th>
@@ -25,12 +47,12 @@
                     <th>Publishing Date</th>
                 </tr>
             </thead>
-            <tbody></tbody>
+            <tbody id="table-body"></tbody>
         </table>
         <div class="buttons">
-            <button>Books</button>
-            <button>Author</button>
-            <button>Publishers</button>
+            <button id="button1">Books</button>
+            <button id="button2">Author</button>
+            <button id="button3">Publishers</button>
         </div>
     </main>
     <script src="script.js"></script>
