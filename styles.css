@@ -63,8 +63,31 @@ table td{
     font-weight: bold;
 }
 
+#table-body tr:hover{
+    background-color: #e0d8b0;
+}
+
 .row-button{
     padding: 3px 15px;
+}
+
+#edit-dialog{
+    width: 300px;
+    height: 300px;
+    background: linear-gradient(90deg, #cee5d0, #fcf8e8);
+    border: 4px solid #ce9461;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#close-dialog{
+    position: relative;
+    left: 270px;
+    top: 5px;
+    color: red;
+    background-color: transparent;
 }
 
 .buttons{
@@ -94,14 +117,14 @@ button:hover{
     color: black;
 }
 
-#book-form div{
+#book-form div, #edit-form div{
     margin-top: 5px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-#book-form div:last-child{
+#book-form div:last-child, #edit-form div:last-child{
     justify-content: end;
 }
 
@@ -114,3 +137,20 @@ button:hover{
     padding: 5px;
     color: white;
 }
+
+#edit-form{
+    margin: 30px auto;
+    width: 250px;
+}
+
+#edit-form input{
+    width: 120px;
+}
+
+#edit-form button{
+    width: 120px;
+    border: none;
+    padding: 5px 0;
+    margin-top: 5px;
+}
+
