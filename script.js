@@ -26,14 +26,14 @@ const home = () => {
   bookForm.style.display = 'none'
   update(locations[0])
   tableBody.innerHTML = ''
-  displayHome();
+  displayHome()
 }
 
 const bookManagement = () => {
   bookForm.style.display = 'block'
   update(locations[1])
   tableBody.innerHTML = ''
-  displayBookManagement();
+  displayBookManagement()
 }
 
 const authors = () => {
@@ -41,16 +41,14 @@ const authors = () => {
   update(locations[2])
   tableBody.innerHTML = ''
   displayAuthor()
-  
 }
 
 const publishers = () => {
   bookForm.style.display = 'none'
   update(locations[3])
-  tableBody.innerHTML
+  tableBody.innerHTML = ''
+  displayPublisher()
 }
-
-
 
 const locations = [
   {
@@ -118,7 +116,8 @@ const displayHome = () => {
         <td>${name}</td>
         <td>${author}</td>
         <td>${publisher}</td>
-        <td>${date}</td>`
+        <td>${date}</td>
+        </tr>`
   }
 }
 
@@ -147,12 +146,21 @@ const displayAuthor = () => {
         <td>${i + 1}</td>
         <td>${name}</td>
         <td>${nob}</td>
-        <td><button class = "row-button">Delete</button></td>`
+        <td><button class = "row-button">Delete</button></td>
+        </tr>`
   }
 }
 
 const displayPublisher = () => {
-  
+  for (let i = 0; i < publisherArr.length; i++) {
+    const { name, nob } = publisherArr[i]
+    tableBody.innerHTML += `<tr>
+        <td>${i + 1}</td>
+        <td>${name}</td>
+        <td>${nob}</td>
+        <td><button class = "row-button">Delete</button></td>
+        </tr>`
+  }
 }
 
 const addBook = (name, author, publisher, date) => {
@@ -186,9 +194,9 @@ const addAuthor = (name, bookName) => {
 }
 
 const addPublisher = (name, bookName) => {
-  for(let i = 0; i < publisherArr.length; i++){
-    if(publisherArr[i].name.toLowerCase() === name.toLowerCase()){
-      publisherArr[i].nob++;
+  for (let i = 0; i < publisherArr.length; i++) {
+    if (publisherArr[i].name.toLowerCase() === name.toLowerCase()) {
+      publisherArr[i].nob++
       publisherArr[i].books.push(bookName)
       return
     }
@@ -197,18 +205,18 @@ const addPublisher = (name, bookName) => {
   const obj = {
     name: `${name}`,
     books: [bookName],
-    nob: 1,
+    nob: 1
   }
 
   publisherArr.push(obj)
 }
-
 
 const editBook = id => {
   editDialog.showModal()
   const { name, author, publisher, date } = bookArr[id]
   const authorName = author
   const bookName = name
+  const publisherName = publisher
   editName.value = name
   editAuthor.value = author
   editPublisher.value = publisher
@@ -219,6 +227,7 @@ const editBook = id => {
     bookArr[id].publisher = editPublisher.value
     bookArr[id].date = editDate.value
 
+    //Conditions for Author changes
     if (
       authorName.toLowerCase() !== bookArr[id].author.toLowerCase() &&
       bookName.toLowerCase() === bookArr[id].name.toLowerCase()
@@ -239,195 +248,39 @@ const editBook = id => {
     ) {
       editedAuthor(authorName, undefined, bookName, bookArr[id].name)
     }
-    console.log(authorArr)
+
+    //Conditions for publisher changes
+    if (
+      publisherName.toLowerCase() !== bookArr[id].publisher.toLowerCase() &&
+      bookName.toLowerCase() === bookArr[id].name.toLowerCase()
+    ) {
+      editedPublisher(publisherName, bookArr[id].publisher, bookName)
+    }
+
+    if (
+      publisherName.toLowerCase() !== bookArr[id].publisher.toLowerCase() &&
+      bookName.toLowerCase() !== bookArr[id].name.toLowerCase()
+    ) {
+      editedPublisher(
+        publisherName,
+        bookArr[id].publisher,
+        bookName,
+        bookArr[id].name
+      )
+    }
+
+    if (
+      publisherName.toLowerCase() === bookArr[id].publisher.toLowerCase() &&
+      bookName.toLowerCase() !== bookArr[id].name.toLowerCase()
+    ) {
+      editedPublisher(publisherName, undefined, bookName, bookArr[id].name)
+    }
 
     tableBody.innerHTML = ''
-    for (let i = 0; i < bookArr.length; i++) {
-      const { name, author, publisher, date } = bookArr[i]
-      tableBody.innerHTML += `<tr>
-        <td>${i + 1}</td>
-        <td>${name}</td>
-        <td>${author}</td>
-        <td>${publisher}</td>
-        <td>${date}</td>
-        <td>
-        <button class="row-button" onclick= "editBook(${i})">Edit</button>
-        </td>
-        <td>
-        <button class="row-button" onclick = "deleteBook(${i})">Delete</button></td>
-        </tr>`
-    }
+    displayBookManagement()
     editDialog.close()
   }
 }
-
-const deleteBook = id => {
-  if (id === 0) {
-    for (let i = 0; i < authorArr.length; i++) {
-      if (bookArr[id].author === authorArr[i].name) {
-        authorArr[i].nob--
-        if (authorArr[i].nob === 0) {
-          deleteAuthor(i)
-          break
-        }
-        for (let j = 0; j < authorArr[i].books.length; j++) {
-          if (authorArr[i].books[j] === bookArr[id].name) {
-            if (j === 0) {
-              authorArr[i].books.shift()
-              break
-            }
-            if (j === authorArr[i].books.length - 1) {
-              authorArr[i].books.pop()
-              break
-            }
-            for (let k = j; k < authorArr[i].books.length - 1; k++) {
-              authorArr[i].books[k] = authorArr[i].books[k + 1]
-            }
-            authorArr[i].books.pop()
-            break
-          }
-        }
-        break
-      }
-    }
-    bookArr.shift()
-    console.log(authorArr)
-    tableBody.innerHTML = ''
-    for (let i = 0; i < bookArr.length; i++) {
-      const { name, author, publisher, date } = bookArr[i]
-      tableBody.innerHTML += `<tr>
-        <td>${i + 1}</td>
-        <td>${name}</td>
-        <td>${author}</td>
-        <td>${publisher}</td>
-        <td>${date}</td>
-        <td>
-        <button class="row-button" onclick= "editBook(${i})">Edit</button>
-        </td>
-        <td>
-        <button class="row-button" onclick = "deleteBook(${i})">Delete</button></td>
-        </tr>`
-    }
-    return
-  }
-
-  if (id === bookArr.length - 1) {
-    for (let i = 0; i < authorArr.length; i++) {
-      if (bookArr[id].author === authorArr[i].name) {
-        authorArr[i].nob--
-        if (authorArr[i].nob === 0) {
-          deleteAuthor(i)
-        }
-        for (let j = 0; j < authorArr[i].books.length; j++) {
-          if (authorArr[i].books[j] === bookArr[id].name) {
-            if (j === 0) {
-              authorArr[i].books.shift()
-              break
-            }
-            if (j === authorArr[i].books.length - 1) {
-              authorArr[i].books.pop()
-              break
-            }
-            for (let k = j; k < authorArr[i].books.length - 1; k++) {
-              authorArr[i].books[k] = authorArr[i].books[k + 1]
-            }
-            authorArr[i].books.pop()
-            break
-          }
-        }
-        break
-      }
-    }
-    console.log(authorArr)
-    bookArr.pop()
-    tableBody.innerHTML = ''
-    for (let i = 0; i < bookArr.length; i++) {
-      const { name, author, publisher, date } = bookArr[i]
-      tableBody.innerHTML += `<tr>
-        <td>${i + 1}</td>
-        <td>${name}</td>
-        <td>${author}</td>
-        <td>${publisher}</td>
-        <td>${date}</td>
-        <td>
-        <button class="row-button" onclick= "editBook(${i})">Edit</button>
-        </td>
-        <td>
-        <button class="row-button" onclick = "deleteBook(${i})">Delete</button></td>
-        </tr>`
-    }
-    return
-  }
-
-  for (let i = 0; i < authorArr.length; i++) {
-    if (bookArr[id].author === authorArr[i].name) {
-      authorArr[i].nob--
-      if (authorArr[i].nob === 0) {
-        deleteAuthor(i)
-      }
-      for(let j = 0; j < authorArr[i].books.length; j++){
-        if(authorArr[i].books[j] === bookArr[id].name){
-          if(j === 0){
-            authorArr[i].books.shift();
-            break
-          }
-          if(j === authorArr[i].books.length - 1){
-            authorArr[i].books.pop();
-            break
-          }
-          for(let k = j; k < authorArr[i].books.length - 1; k++){
-            authorArr[i].books[k] = authorArr[i].books[k+1]
-          }
-          authorArr[i].books.pop();
-          break
-        }
-      }
-      break
-    }
-  }
-  console.log(authorArr)
-  for (let i = 0; i < bookArr.length; i++) {
-    if (i === id) {
-      for (let j = i; j < bookArr.length - 1; j++) {
-        bookArr[j].name = bookArr[j + 1].name
-        bookArr[j].author = bookArr[j + 1].author
-        bookArr[j].publisher = bookArr[j + 1].publisher
-        bookArr[j].date = bookArr[j + 1].date
-      }
-    }
-  }
-
-  bookArr.pop()
-
-  tableBody.innerHTML = ''
-  for (let i = 0; i < bookArr.length; i++) {
-    const { name, author, publisher, date } = bookArr[i]
-    tableBody.innerHTML += `<tr>
-        <td>${i + 1}</td>
-        <td>${name}</td>
-        <td>${author}</td>
-        <td>${publisher}</td>
-        <td>${date}</td>
-        <td>
-        <button class="row-button" onclick= "editBook(${i})">Edit</button>
-        </td>
-        <td>
-        <button class="row-button" onclick = "deleteBook(${i})">Delete</button></td>
-        </tr>`
-  }
-}
-
-
-
-
-
-
-
-
-
-
-
-
 
 const editedAuthor = (
   preAuthor,
@@ -459,21 +312,171 @@ const editedAuthor = (
           break
         }
       }
+      break
     }
   }
 
   addAuthor(newAuthor, newBook)
 }
 
-const deleteAndDisplayAuthor = (id) => {
-  for(let i = 0; i < authorArr[id].books.length; i++){
-    for(let j = 0; j < bookArr.length; j++){
-      if(bookArr[j].name === authorArr[id].books[i]){
-        deleteBook(i);
+const editedPublisher = (
+  prePublisher,
+  newPublisher = prePublisher,
+  bookName,
+  newBook = bookName
+) => {
+  for (let i = 0; i < publisherArr.length; i++) {
+    if (publisherArr[i].name === prePublisher) {
+      publisherArr[i].nob--
+      if (publisherArr[i].nob === 0) {
+        deletePublisher(i)
+        break
+      }
+      for (let j = 0; j < publisherArr[i].books.length; j++) {
+        if (publisherArr[i].books[j] === bookName) {
+          if (j === 0) {
+            publisherArr[i].books.shift()
+            break
+          }
+          if (j === publisherArr[i].books.length - 1) {
+            publisherArr[i].books.pop()
+            break
+          }
+          for (let k = j; k < publisherArr[i].books.length - 1; k++) {
+            publisherArr[i].books[k] = publisherArr[i].books[k + 1]
+          }
+          publisherArr[i].books.pop()
+          break
+        }
+      }
+      break
+    }
+  }
+
+  addPublisher(newPublisher, newBook)
+}
+
+const deleteBook = id => {
+  if (id === 0) {
+    // for (let i = 0; i < authorArr.length; i++) {
+    //   if (bookArr[id].author === authorArr[i].name) {
+    //     authorArr[i].nob--
+    //     if (authorArr[i].nob === 0) {
+    //       deleteAuthor(i)
+    //       break
+    //     }
+    //     for (let j = 0; j < authorArr[i].books.length; j++) {
+    //       if (authorArr[i].books[j] === bookArr[id].name) {
+    //         if (j === 0) {
+    //           authorArr[i].books.shift()
+    //           break
+    //         }
+    //         if (j === authorArr[i].books.length - 1) {
+    //           authorArr[i].books.pop()
+    //           break
+    //         }
+    //         for (let k = j; k < authorArr[i].books.length - 1; k++) {
+    //           authorArr[i].books[k] = authorArr[i].books[k + 1]
+    //         }
+    //         authorArr[i].books.pop()
+    //         break
+    //       }
+    //     }
+    //     break
+    //   }
+    // }
+    bookArr.shift()
+    tableBody.innerHTML = ''
+    displayBookManagement()
+    return
+  }
+
+  if (id === bookArr.length - 1) {
+    // for (let i = 0; i < authorArr.length; i++) {
+    //   if (bookArr[id].author === authorArr[i].name) {
+    //     authorArr[i].nob--
+    //     if (authorArr[i].nob === 0) {
+    //       deleteAuthor(i)
+    //     }
+    //     for (let j = 0; j < authorArr[i].books.length; j++) {
+    //       if (authorArr[i].books[j] === bookArr[id].name) {
+    //         if (j === 0) {
+    //           authorArr[i].books.shift()
+    //           break
+    //         }
+    //         if (j === authorArr[i].books.length - 1) {
+    //           authorArr[i].books.pop()
+    //           break
+    //         }
+    //         for (let k = j; k < authorArr[i].books.length - 1; k++) {
+    //           authorArr[i].books[k] = authorArr[i].books[k + 1]
+    //         }
+    //         authorArr[i].books.pop()
+    //         break
+    //       }
+    //     }
+    //     break
+    //   }
+    // }
+    bookArr.pop()
+    tableBody.innerHTML = ''
+    displayBookManagement()
+    return
+  }
+
+  // for (let i = 0; i < authorArr.length; i++) {
+  //   if (bookArr[id].author === authorArr[i].name) {
+  //     authorArr[i].nob--
+  //     if (authorArr[i].nob === 0) {
+  //       deleteAuthor(i)
+  //     }
+  //     for (let j = 0; j < authorArr[i].books.length; j++) {
+  //       if (authorArr[i].books[j] === bookArr[id].name) {
+  //         if (j === 0) {
+  //           authorArr[i].books.shift()
+  //           break
+  //         }
+  //         if (j === authorArr[i].books.length - 1) {
+  //           authorArr[i].books.pop()
+  //           break
+  //         }
+  //         for (let k = j; k < authorArr[i].books.length - 1; k++) {
+  //           authorArr[i].books[k] = authorArr[i].books[k + 1]
+  //         }
+  //         authorArr[i].books.pop()
+  //         break
+  //       }
+  //     }
+  //     break
+  //   }
+  // }
+  // console.log(authorArr)
+  for (let i = 0; i < bookArr.length; i++) {
+    if (i === id) {
+      for (let j = i; j < bookArr.length - 1; j++) {
+        bookArr[j].name = bookArr[j + 1].name
+        bookArr[j].author = bookArr[j + 1].author
+        bookArr[j].publisher = bookArr[j + 1].publisher
+        bookArr[j].date = bookArr[j + 1].date
       }
     }
   }
-  deleteAuthor(id);
+
+  bookArr.pop()
+
+  tableBody.innerHTML = ''
+  displayBookManagement()
+}
+
+const deleteAndDisplayAuthor = id => {
+  for (let i = 0; i < authorArr[id].books.length; i++) {
+    for (let j = 0; j < bookArr.length; j++) {
+      if (bookArr[j].name === authorArr[id].books[i]) {
+        deleteBook(i)
+      }
+    }
+  }
+  deleteAuthor(id)
 }
 
 const deleteAuthor = id => {
@@ -489,18 +492,40 @@ const deleteAuthor = id => {
 
   for (let i = 0; i < authorArr.length; i++) {
     if (i === id) {
-      for (let j = i; j < authorArr.length; j++) {
+      for (let j = i; j < authorArr.length - 1; j++) {
         authorArr[j].name = authorArr[j + 1].name
+        authorArr[j].books = authorArr[j + 1].books
         authorArr[j].nob = authorArr[j + 1].nob
       }
     }
   }
 
   authorArr.pop()
-  
 }
 
+const deletePublisher = id => {
+  if (id === 0) {
+    publisherArr.shift()
+    return
+  }
 
+  if (id === publisherArr.length - 1) {
+    publisherArr.pop()
+    return
+  }
+
+  for (let i = 0; i < publisherArr.length; i++) {
+    if (i === id) {
+      for (let j = i; j < publisherArr.length - 1; j++) {
+        publisherArr[j].name = publisherArr[j + 1].name
+        publisherArr[j].books = publisherArr[j + 1].books
+        publisherArr[j].nob = publisherArr[j + 1].nob
+      }
+    }
+  }
+
+  publisherArr.pop()
+}
 
 const clearInput = () => {
   nameInput.value = ''
@@ -518,7 +543,7 @@ bookForm.addEventListener('submit', e => {
     dateInput.value
   )
   tableBody.innerHTML = ''
-  displayBookManagement();
+  displayBookManagement()
   clearInput()
 })
 
@@ -531,4 +556,4 @@ closeDialogBtn.addEventListener('click', () => {
 button1.onclick = bookManagement
 button2.onclick = authors
 button3.onclick = publishers
-displayHome();
+displayHome()
