@@ -63,6 +63,10 @@ table td{
     font-weight: bold;
 }
 
+table caption{
+    margin-top: 20px;
+}
+
 #table-body tr:hover{
     background-color: #e0d8b0;
 }
