@@ -18,9 +18,9 @@ const editAuthor = document.getElementById('edit-author')
 const editPublisher = document.getElementById('edit-publisher')
 const editDate = document.getElementById('edit-date')
 
-const bookArr = []
-const authorArr = []
-const publisherArr = []
+const bookArr = JSON.parse(localStorage.getItem('books')) || []
+const authorArr = JSON.parse(localStorage.getItem('authors')) || []
+const publisherArr = JSON.parse(localStorage.getItem('publishers')) || []
 
 const home = () => {
   bookForm.style.display = 'none'
@@ -134,7 +134,7 @@ const displayBookManagement = () => {
         <button class="row-button" onclick= "editBook(${i})">Edit</button>
         </td>
         <td>
-        <button class="row-button" onclick = "deleteBook(${i})">Delete</button></td>
+        <button class="row-button" onclick = "deleteAndDisplayBook(${i})">Delete</button></td>
         </tr>`
   }
 }
@@ -146,7 +146,7 @@ const displayAuthor = () => {
         <td>${i + 1}</td>
         <td>${name}</td>
         <td>${nob}</td>
-        <td><button class = "row-button">Delete</button></td>
+        <td><button class = "row-button" onclick = "deleteAndDisplayAuthor(${i})">Delete</button></td>
         </tr>`
   }
 }
@@ -158,7 +158,7 @@ const displayPublisher = () => {
         <td>${i + 1}</td>
         <td>${name}</td>
         <td>${nob}</td>
-        <td><button class = "row-button">Delete</button></td>
+        <td><button class = "row-button" onclick = "deleteAndDisplayPublisher(${i})">Delete</button></td>
         </tr>`
   }
 }
@@ -171,6 +171,7 @@ const addBook = (name, author, publisher, date) => {
     date: `${date}`
   }
   bookArr.push(obj)
+  localStorage.setItem('books', JSON.stringify(bookArr))
   addAuthor(author, name)
   addPublisher(publisher, name)
 }
@@ -191,6 +192,7 @@ const addAuthor = (name, bookName) => {
   }
 
   authorArr.push(obj)
+  localStorage.setItem('authors', JSON.stringify(authorArr))
 }
 
 const addPublisher = (name, bookName) => {
@@ -209,6 +211,7 @@ const addPublisher = (name, bookName) => {
   }
 
   publisherArr.push(obj)
+  localStorage.setItem('publishers', JSON.stringify(publisherArr))
 }
 
 const editBook = id => {
@@ -221,7 +224,8 @@ const editBook = id => {
   editAuthor.value = author
   editPublisher.value = publisher
   editDate.value = date
-  editForm.onsubmit = () => {
+  editForm.onsubmit = e => {
+    e.preventDefault()
     bookArr[id].name = editName.value
     bookArr[id].author = editAuthor.value
     bookArr[id].publisher = editPublisher.value
@@ -276,6 +280,7 @@ const editBook = id => {
       editedPublisher(publisherName, undefined, bookName, bookArr[id].name)
     }
 
+    localStorage.setItem('books', JSON.stringify(bookArr))
     tableBody.innerHTML = ''
     displayBookManagement()
     editDialog.close()
@@ -317,6 +322,7 @@ const editedAuthor = (
   }
 
   addAuthor(newAuthor, newBook)
+  localStorage.setItem('authors', JSON.stringify(authorArr))
 }
 
 const editedPublisher = (
@@ -354,103 +360,20 @@ const editedPublisher = (
   }
 
   addPublisher(newPublisher, newBook)
+  localStorage.setItem('publishers', JSON.stringify(publisherArr))
 }
 
 const deleteBook = id => {
   if (id === 0) {
-    // for (let i = 0; i < authorArr.length; i++) {
-    //   if (bookArr[id].author === authorArr[i].name) {
-    //     authorArr[i].nob--
-    //     if (authorArr[i].nob === 0) {
-    //       deleteAuthor(i)
-    //       break
-    //     }
-    //     for (let j = 0; j < authorArr[i].books.length; j++) {
-    //       if (authorArr[i].books[j] === bookArr[id].name) {
-    //         if (j === 0) {
-    //           authorArr[i].books.shift()
-    //           break
-    //         }
-    //         if (j === authorArr[i].books.length - 1) {
-    //           authorArr[i].books.pop()
-    //           break
-    //         }
-    //         for (let k = j; k < authorArr[i].books.length - 1; k++) {
-    //           authorArr[i].books[k] = authorArr[i].books[k + 1]
-    //         }
-    //         authorArr[i].books.pop()
-    //         break
-    //       }
-    //     }
-    //     break
-    //   }
-    // }
     bookArr.shift()
-    tableBody.innerHTML = ''
-    displayBookManagement()
     return
   }
 
   if (id === bookArr.length - 1) {
-    // for (let i = 0; i < authorArr.length; i++) {
-    //   if (bookArr[id].author === authorArr[i].name) {
-    //     authorArr[i].nob--
-    //     if (authorArr[i].nob === 0) {
-    //       deleteAuthor(i)
-    //     }
-    //     for (let j = 0; j < authorArr[i].books.length; j++) {
-    //       if (authorArr[i].books[j] === bookArr[id].name) {
-    //         if (j === 0) {
-    //           authorArr[i].books.shift()
-    //           break
-    //         }
-    //         if (j === authorArr[i].books.length - 1) {
-    //           authorArr[i].books.pop()
-    //           break
-    //         }
-    //         for (let k = j; k < authorArr[i].books.length - 1; k++) {
-    //           authorArr[i].books[k] = authorArr[i].books[k + 1]
-    //         }
-    //         authorArr[i].books.pop()
-    //         break
-    //       }
-    //     }
-    //     break
-    //   }
-    // }
     bookArr.pop()
-    tableBody.innerHTML = ''
-    displayBookManagement()
     return
   }
 
-  // for (let i = 0; i < authorArr.length; i++) {
-  //   if (bookArr[id].author === authorArr[i].name) {
-  //     authorArr[i].nob--
-  //     if (authorArr[i].nob === 0) {
-  //       deleteAuthor(i)
-  //     }
-  //     for (let j = 0; j < authorArr[i].books.length; j++) {
-  //       if (authorArr[i].books[j] === bookArr[id].name) {
-  //         if (j === 0) {
-  //           authorArr[i].books.shift()
-  //           break
-  //         }
-  //         if (j === authorArr[i].books.length - 1) {
-  //           authorArr[i].books.pop()
-  //           break
-  //         }
-  //         for (let k = j; k < authorArr[i].books.length - 1; k++) {
-  //           authorArr[i].books[k] = authorArr[i].books[k + 1]
-  //         }
-  //         authorArr[i].books.pop()
-  //         break
-  //       }
-  //     }
-  //     break
-  //   }
-  // }
-  // console.log(authorArr)
   for (let i = 0; i < bookArr.length; i++) {
     if (i === id) {
       for (let j = i; j < bookArr.length - 1; j++) {
@@ -459,24 +382,11 @@ const deleteBook = id => {
         bookArr[j].publisher = bookArr[j + 1].publisher
         bookArr[j].date = bookArr[j + 1].date
       }
+      break
     }
   }
 
   bookArr.pop()
-
-  tableBody.innerHTML = ''
-  displayBookManagement()
-}
-
-const deleteAndDisplayAuthor = id => {
-  for (let i = 0; i < authorArr[id].books.length; i++) {
-    for (let j = 0; j < bookArr.length; j++) {
-      if (bookArr[j].name === authorArr[id].books[i]) {
-        deleteBook(i)
-      }
-    }
-  }
-  deleteAuthor(id)
 }
 
 const deleteAuthor = id => {
@@ -497,6 +407,7 @@ const deleteAuthor = id => {
         authorArr[j].books = authorArr[j + 1].books
         authorArr[j].nob = authorArr[j + 1].nob
       }
+      break
     }
   }
 
@@ -521,10 +432,166 @@ const deletePublisher = id => {
         publisherArr[j].books = publisherArr[j + 1].books
         publisherArr[j].nob = publisherArr[j + 1].nob
       }
+      break
     }
   }
 
   publisherArr.pop()
+}
+
+const deleteAndDisplayBook = id => {
+  //Deleting corresponding author
+  for (let i = 0; i < authorArr.length; i++) {
+    if (bookArr[id].author === authorArr[i].name) {
+      authorArr[i].nob--
+      if (authorArr[i].nob === 0) {
+        deleteAuthor(i)
+        break
+      }
+      for (let j = 0; j < authorArr[i].books.length; j++) {
+        if (authorArr[i].books[j] === bookArr[id].name) {
+          if (j === 0) {
+            authorArr[i].books.shift()
+            break
+          }
+          if (j === authorArr[i].books.length - 1) {
+            authorArr[i].books.pop()
+            break
+          }
+          for (let k = j; k < authorArr[i].books.length - 1; k++) {
+            authorArr[i].books[k] = authorArr[i].books[k + 1]
+          }
+          authorArr[i].books.pop()
+          break
+        }
+      }
+      break
+    }
+  }
+
+  //Deleting Corresponding Publisher
+  for (let i = 0; i < publisherArr.length; i++) {
+    if (bookArr[id].publisher === publisherArr[i].name) {
+      publisherArr[i].nob--
+      if (publisherArr[i].nob === 0) {
+        deletePublisher(i)
+        break
+      }
+      for (let j = 0; j < publisherArr[i].books.length; j++) {
+        if (publisherArr[i].books[j] === bookArr[id].name) {
+          if (j === 0) {
+            publisherArr[i].books.shift()
+            break
+          }
+          if (j === authorArr[i].books.length - 1) {
+            publisherArr[i].books.pop()
+            break
+          }
+          for (let k = j; k < publisherArr[i].books.length - 1; k++) {
+            publisherArr[i].books[k] = publisherArr[i].books[k + 1]
+          }
+          publisherArr[i].books.pop()
+          break
+        }
+      }
+      break
+    }
+  }
+
+  deleteBook(id)
+  localStorage.setItem('books', JSON.stringify(bookArr))
+  localStorage.setItem('authors', JSON.stringify(authorArr))
+  localStorage.setItem('publishers', JSON.stringify(publisherArr))
+  tableBody.innerHTML = ''
+  displayBookManagement()
+}
+
+const deleteAndDisplayAuthor = id => {
+  //Deleting Corresponding Books
+  for (let i = 0; i < authorArr[id].books.length; i++) {
+    for (let j = 0; j < bookArr.length; j++) {
+      if (authorArr[id].books[i] === bookArr[j].name) {
+        //Deleting Corresponding Publisher
+        for (let k = 0; k < publisherArr.length; k++) {
+          if (publisherArr[k].name === bookArr[j].publisher) {
+            publisherArr[k].nob--
+            if (publisherArr[k].nob === 0) {
+              deletePublisher(k)
+              break
+            }
+            for (let l = 0; l < publisherArr[k].books.length; l++) {
+              if (publisherArr[k].books[l] === bookArr[j].name) {
+                if (l === 0) {
+                  publisherArr[k].books.shift()
+                  break
+                } else if (l === publisherArr[k].books.length - 1) {
+                  publisherArr[k].books.pop()
+                  break
+                } else {
+                  for (let m = l; m < publisherArr[k].books.length - 1; m++) {
+                    publisherArr[k].books[m] = publisherArr[k].books[m + 1]
+                  }
+                  publisherArr[k].books.pop()
+                  break
+                }
+              }
+            }
+          }
+        }
+        deleteBook(j)
+      }
+    }
+  }
+  localStorage.setItem('books', JSON.stringify(bookArr))
+  localStorage.setItem('authors', JSON.stringify(authorArr))
+  localStorage.setItem('publishers', JSON.stringify(publisherArr))
+  deleteAuthor(id)
+  tableBody.innerHTML = ''
+  displayAuthor()
+}
+
+const deleteAndDisplayPublisher = id => {
+  //Deleting Corresponding Books
+  for (let i = 0; i < publisherArr[id].books.length; i++) {
+    for (let j = 0; j < bookArr.length; j++) {
+      if (publisherArr[id].books[i] === bookArr[j].name) {
+        //Deleting Corresponding Author
+        for (let k = 0; k < authorArr.length; k++) {
+          if (authorArr[k].name === bookArr[j].author) {
+            authorArr[k].nob--
+            if (authorArr[k].nob === 0) {
+              deleteAuthor(k)
+              break
+            }
+            for (let l = 0; l < authorArr[k].books.length; l++) {
+              if (authorArr[k].books[l] === bookArr[j].name) {
+                if (l === 0) {
+                  authorArr[k].books.shift()
+                  break
+                } else if (l === authorArr[k].books.length - 1) {
+                  authorArr[k].books.pop()
+                  break
+                } else {
+                  for (let m = l; m < authorArr[k].books.length - 1; m++) {
+                    authorArr[k].books[m] = authorArr[k].books[m + 1]
+                  }
+                  authorArr[k].books.pop()
+                  break
+                }
+              }
+            }
+          }
+        }
+        deleteBook(j)
+      }
+    }
+  }
+  deletePublisher(id)
+  localStorage.setItem('books', JSON.stringify(bookArr))
+  localStorage.setItem('authors', JSON.stringify(authorArr))
+  localStorage.setItem('publishers', JSON.stringify(publisherArr))
+  tableBody.innerHTML = ''
+  displayPublisher()
 }
 
 const clearInput = () => {
@@ -536,6 +603,13 @@ const clearInput = () => {
 
 bookForm.addEventListener('submit', e => {
   e.preventDefault()
+  for(let i = 0; i < bookArr.length; i++){
+    if(nameInput.value.toLowerCase() === bookArr[i].name.toLowerCase()){
+      alert("Book already exists! Please enter a new book")
+      clearInput()
+      return
+    }
+  }
   addBook(
     nameInput.value,
     authorInput.value,
